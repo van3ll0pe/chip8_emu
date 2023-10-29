@@ -14,9 +14,14 @@ typedef struct Cpu_t {
     uint16_t PC;
     uint8_t SP;
 
+    uint8_t delay_timer;
+    uint8_t sound_timer;
+
     uint16_t instruction;
 
     void (*fetch_instruction)(struct Cpu_t* cpu);
+    void (*decode_instruction)(struct Cpu_t* cpu);
+    void (*execute_instruction)(struct Cpu_t* cpu);
     
 } Cpu_t;
 

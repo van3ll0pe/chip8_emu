@@ -4,7 +4,8 @@ INCDIR= -I ./src
 
 SRC_FILES = ./src/bus.c	\
 				./src/cpu.c \
-				./src/main.c
+				./src/main.c \
+				./src/instructions.c
 
 OBJ_FILES = ${SRC_FILES:.c=.o}
 
@@ -14,6 +15,11 @@ All: $(EXEC)
 
 chip8_emu: $(OBJ_FILES)
 	$(CC) $^ $(INCDIR}) $(FLAGS) -o $@
+
+bus.o: src/bus.h
+cpu.o: src/cpu.h src/bus.h src/instructions.h
+instructions.o: src/cpu.h src/bus.h
+main.o: src/bus.h
 
 %.o : %.c
 	$(CC) $(INCDIR) $(FLAGS) -c $< -o $@
