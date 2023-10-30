@@ -20,9 +20,11 @@ typedef struct Cpu_t {
     uint16_t instruction;
 
     void (*fetch_instruction)(struct Cpu_t* cpu);
-    void (*decode_instruction)(struct Cpu_t* cpu);
     void (*execute_instruction)(struct Cpu_t* cpu);
     
 } Cpu_t;
+
+Cpu_t* cpu_initialize();
+void cpu_destroy(Cpu_t* cpu);
 
 #endif //__CPU_H__

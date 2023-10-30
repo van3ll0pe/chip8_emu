@@ -4,7 +4,11 @@
 #include <stdbool.h>
 #include <fcntl.h>
 
+#include <SDL2/SDL.h>
+
 #include "bus.h"
+#include "cpu.h"
+#include "ppu.h"
 
 bool
 getProgramFromFile(char* file, uint8_t** program, uint16_t* program_size)
@@ -52,6 +56,9 @@ main(int ac, char** av)
         return 1;
     }
 
+    if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
+        return 1;
+
     uint8_t* program = NULL;
     uint16_t program_size = 0;
 
@@ -61,8 +68,25 @@ main(int ac, char** av)
     Bus_t* bus = bus_initialize();
     bus_loadProgram(bus, program, program_size);
 
+    Cpu_t* cpu = cpu_initialize();
+    Ppu_t* ppu = ppu_initialize();
+
+    SDL_Event event;
+    while(ppu->windowOpen) {
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT)
+                ppu->windowOpen = false;
+        }
+
+        ppu->clear_screen(ppu);
+        ppu->update_screen(ppu);
+    }
+
 
     free(program);
     bus_destroy(bus);
+    cpu_destroy(cpu);
+    ppu_destroy(ppu);
+    SDL_Quit();
     return 0;
 }

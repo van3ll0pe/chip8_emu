@@ -15,7 +15,10 @@ instruction_RET(Cpu_t* cpu)
     if (!cpu)
         exit(EXIT_FAILURE);
     
-    cpu->PC = cpu->bus->read(cpu->bus, MEMORY_STACK_START + (--cpu->SP)) | (cpu->bus->read(cpu->bus, MEMORY_STACK_START + (--cpu->SP)) << 8);
+    cpu->SP--;
+    cpu->PC = cpu->bus->read(cpu->bus, MEMORY_STACK_START + cpu->SP);
+    cpu->SP--;
+    cpu->PC += (cpu->bus->read(cpu->bus, MEMORY_STACK_START + cpu->SP) << 8);
 }
 
 void
@@ -33,8 +36,10 @@ instruction_CALL(Cpu_t* cpu, uint16_t address)
     if (!cpu)
         exit(EXIT_FAILURE);
     
-    cpu->bus->write(cpu->bus, MEMORY_STACK_START + cpu->SP++, (cpu->PC & 0xFF00) >> 8);
-    cpu->bus->write(cpu->bus, MEMORY_STACK_START + cpu->SP++, cpu->PC & 0x00FF);
+    cpu->bus->write(cpu->bus, MEMORY_STACK_START + cpu->SP, (cpu->PC & 0xFF00) >> 8);
+    cpu->SP++;
+    cpu->bus->write(cpu->bus, MEMORY_STACK_START + cpu->SP, cpu->PC & 0x00FF);
+    cpu->SP++;
     cpu->PC = address;
 }
 
@@ -328,7 +333,7 @@ instruction_LD_b_x(Cpu_t* cpu, uint8_t x)
 }
 
 void
-instruction_mem_I_x(Cpu_t* cpu, uint8_t x)
+instruction_LD_mem_I_x(Cpu_t* cpu, uint8_t x)
 {
     if (!cpu)
         exit(EXIT_FAILURE);
@@ -339,7 +344,7 @@ instruction_mem_I_x(Cpu_t* cpu, uint8_t x)
 }
 
 void
-instruction_x_mem_I(Cpu_t* cpu, uint8_t x)
+instruction_LD_x_mem_I(Cpu_t* cpu, uint8_t x)
 {
     if (!cpu)
         exit(EXIT_FAILURE);

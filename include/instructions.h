@@ -35,8 +35,8 @@ void instruction_LD_st_x(Cpu_t* cpu, uint8_t x);
 void instruction_ADD_I_x(Cpu_t* cpu, uint8_t x);
 void instruction_LD_f_x(Cpu_t* cpu, uint8_t x);
 void instruction_LD_b_x(Cpu_t* cpu, uint8_t x);
-void instruction_mem_I_x(Cpu_t* cpu, uint8_t x);
-void instruction_x_mem_I(Cpu_t* cpu, uint8_t x);
+void instruction_LD_mem_I_x(Cpu_t* cpu, uint8_t x);
+void instruction_LD_x_mem_I(Cpu_t* cpu, uint8_t x);
 
 
 #endif //__INSTRUCTIONS_H__
