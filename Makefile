@@ -1,35 +1,30 @@
-CC= g++
-FLAGS= -O2 -Wall -g
+CC= gcc
+FLAGS= -Wall -g
 INCDIR= -I ./include
-#LIBFLAGS= -lSDL2 -lSDL2main
-SRC_FILES = ./src/bus.cpp	\
-				./src/cpu/cpu.cpp \
-				./src/main.cpp \
-				./src/cpu/instructions.cpp	\
-				./src/component.cpp
+LIBFLAGS= -lSDL2 -lSDL2main
+SRC_FILES =     ./src/bus.c\
+				./src/cpu.c\
+				./src/main.c \
+				./src/ppu.c
 
 
-OBJ_FILES = ${SRC_FILES:.cpp=.o}
+OBJ_FILES = ${SRC_FILES:.c=.o}
 
 EXEC= chip8_emu
 
 All: $(EXEC)
 
 chip8_emu: $(OBJ_FILES)
-	$(CC) $^ $(INCDIR) $(FLAGS) -o $@
+	$(CC) $(OBJ_FILES)  $(INCDIR) $(LIBFLAGS) $(FLAGS) -o $@
 
-bus.o: include/bus.hpp
-component.o: include/component.hpp include/bus.hpp
-main.o: include/bus.hpp include/cpu.hpp \
- include/component.hpp
-cpu.o: include/cpu.hpp include/component.hpp \
- include/bus.hpp
-instructions.o: include/cpu.hpp \
- include/component.hpp include/bus.hpp
+bus.o: include/bus.h
+cpu.o: include/cpu.h include/bus.h include/ppu.h \
+ include/opcode.h include/input.h
+main.o: include/bus.h include/ppu.h include/cpu.h
+ppu.o: include/ppu.h include/bus.h
 
-
-%.o : %.cpp
-	$(CC) $(INCDIR) $(FLAGS) -c $< -o $@
+%.o : %.c
+	$(CC) $(INCDIR) $(LIBFLAGS) $(FLAGS) -c $< -o $@
 
 .PHONY : clean
 clean:
